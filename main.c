@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <string.h>
 int main() {
     printf("Welcome to FoodThingies!\n");
 
@@ -34,11 +34,19 @@ int main() {
         switch (state) {
             case 0: {
                 // Input personal data
-                printf("Please input your data\n");
-                printf("---First name:\n");
+                printf("Please sign in to continue.\n");
+                printf("---Username:\n");
                 gets(username);
                 printf("---Password\n");
                 gets(password);
+                while (strcmp(username, "ranap") && strcmp(password, "bad_password") !=0)
+                {   //user & password check
+                    printf("Incorrect username or password! Try again.");
+                    printf("---First name:\n");
+                    gets(username);
+                    printf("---Password\n");
+                    gets(password);
+                }
                 state++;
                 break;
             }
