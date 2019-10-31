@@ -103,13 +103,12 @@ int main() {
 
                 //we want to check here for '\n' to allow the user to select 0 additional items
                 drinkChoice = getchar();
+                getchar(); //consume new line
                 if(drinkChoice == 'a'+nodrinks) {
                     state--;
-                    //consume new line
-                    getchar();
                     break;
                 }
-                    drinkChoice = getchar()-'a';
+                    drinkChoice = drinkChoice-'a';
                 state++;
                 break;
             }
@@ -118,8 +117,9 @@ int main() {
                 //cutlery
                 printf("Do you want cutlery?\n");
                 printf("a) Yes\nb) No\nc) Go back\n");
-                cutlery=(int)(getchar()-'a');
-                if (cutlery=='c'-'a') state--;
+                cutlery=getchar();
+                getchar(); //consume new line
+                if (cutlery=='c') state--;
                 else state++;
                 break;
             }
@@ -146,14 +146,18 @@ int main() {
                 printf("-------------\n");
                 printf("a) Confirm\n");
                 printf("b) Go back\n");
-                choice = getchar();
-                if (choice == 'a') {
-                    orderFinished = 1; state++;
+                getchar();
+                orderFinished = getchar();
+                //orderFinished = getchar();
+                //altfel imi da eroare ^_^'
+                if (orderFinished - 'a' == 0) {
+                    state++;
+                    orderFinished=1;
                 } else {
+                    orderFinished=0;
                     state -= 2;
                 }
-                // consume new line
-                getchar();
+
                 break;
             }
             default: {printf("Thanks for ordering!");break;}
