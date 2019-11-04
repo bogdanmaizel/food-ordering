@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include "showInfo.h"
+#include "userInput.h"
+
 int main() {
     printf("Welcome to FoodThingies!\n");
-
     // food data
-    int noOfMeals = 3, nrPizza=3, nrPasta=2, nrSalad=4;
-    char meals[][10] = {"Pizza","Pasta","Salad"};
+    int noOfMeals = 3;
+    char meals[][30] = {"Pizza","Pasta","Salad"};
     int noTypes[] = {3,2,4};
     char types[3][4][30] = {
             {"Pizza Carbonara", "Pizza Diavola", "Pizza Margherita",""},
@@ -33,22 +35,14 @@ int main() {
         switch (state) {
             case 0: {
                 // Input personal data
-                printf("Please sign in to continue.\n");
-                printf("---Username:\n");
-                gets(username);
-                printf("---Password:\n");
-                gets(password);
+                getUserPass(username,password);
                 state++;
                 break;
             }
             case 1: {
                 // Choose the meal
                 printf("Please choose the meal type:\n");
-                for(int i=0;i<noOfMeals;i++) {
-                    putchar('a'+i);
-                    printf(") %s\n",meals[i]);
-                }
-                printf("%c) Go back\n",'a'+noOfMeals);
+                showFood(noOfMeals, meals);
                 choice = getchar();
                 // consume new line
                 getchar();
@@ -64,14 +58,7 @@ int main() {
             case 2: {
                 // Choose the meal type
                 printf("Please choose the preferred %s:\n",meals[mealChoice]);
-                if (mealChoice==0) noOfMeals=3;
-                if (mealChoice==1) noOfMeals=2;
-                if (mealChoice==2) noOfMeals=4;
-                for(int i=0;i<noOfMeals;i++) {
-                    putchar('a'+i);
-                    printf(") %s (%.2f)\n",types[mealChoice][i], prices[mealChoice][i]);
-                }
-                printf("%c) Go back\n",'a'+noTypes[mealChoice]);
+                showFood(noTypes[mealChoice], types[mealChoice]);
                 choice = getchar();
                 // consume new line
                 getchar();
