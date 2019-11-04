@@ -38,14 +38,6 @@ int main() {
                 gets(username);
                 printf("---Password:\n");
                 gets(password);
-                while (strcmp(username, "ranap") || strcmp(password, "bad_password") !=0)
-                {   //user & password check
-                    printf("Incorrect username or password! Try again.\n");
-                    printf("---Username:\n");
-                    gets(username);
-                    printf("---Password:\n");
-                    gets(password);
-                }
                 state++;
                 break;
             }
@@ -127,9 +119,9 @@ int main() {
             {
                 //Additional Info
                 printf("Any additional info? Type 'no' for no message.\n");
-                scanf("%s",  infoMsg);
-                if (infoMsg[0]=='n' && infoMsg[1]=='o' && infoMsg[2]==NULL) info=1;
-                else info=0;
+                gets(infoMsg);
+                if (strcmp(infoMsg,"\n")==0) info=0;
+                else info=1;
                 state++;
             }
             case 6:{
@@ -147,20 +139,16 @@ int main() {
                 printf("a) Confirm\n");
                 printf("b) Go back\n");
                 getchar();
+                //getchar();
                 orderFinished = getchar();
-                //orderFinished = getchar();
-                //altfel imi da eroare ^_^'
-                if (orderFinished - 'a' == 0) {
                     state++;
-                    orderFinished=1;
-                } else {
-                    orderFinished=0;
+                if (orderFinished=='b') {
+                    orderFinished = 0;
                     state -= 2;
                 }
 
                 break;
             }
-            default: {printf("Thanks for ordering!");break;}
         }
     }
     return 0;
