@@ -58,7 +58,7 @@ int main() {
             case 2: {
                 // Choose the meal type
                 printf("Please choose the preferred %s:\n",meals[mealChoice]);
-                showFood(noTypes[mealChoice], types[mealChoice]);
+                showFoodWithPrice(noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
                 choice = getchar();
                 // consume new line
                 getchar();
@@ -74,13 +74,7 @@ int main() {
             case 3: {
                 // Choose the drink
                 printf("Choose your drink:\n");
-                for(int i=0;i<nodrinks;i++) {
-                    putchar('a'+i);
-                    printf(") %s (%.2f)\n", drinks[i], drinksPrices[i]);
-                }
-                printf("%c) Go back\n",'a'+nodrinks);
-
-                //we want to check here for '\n' to allow the user to select 0 additional items
+                showFoodWithPrice(nodrinks, drinks, drinksPrices);
                 drinkChoice = getchar();
                 getchar(); //consume new line
                 if(drinkChoice == 'a'+nodrinks) {
@@ -126,7 +120,6 @@ int main() {
                 printf("a) Confirm\n");
                 printf("b) Go back\n");
                 getchar();
-                //getchar();
                 orderFinished = getchar();
                     state++;
                 if (orderFinished=='b') {
