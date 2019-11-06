@@ -7,4 +7,6 @@
 
 void getUserPass(char username[], char password[]);
 
+void checkBackOption(int choice, int choiceCheck, int *state);
+
 #endif //FOOD_ORDERING_USERINPUT_H

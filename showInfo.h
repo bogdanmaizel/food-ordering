@@ -9,4 +9,12 @@ void showFood(int noOfMeals, char meals[][30]);
 
 void showFoodWithPrice(int noOfMeals, char meals[][30], double prices[]);
 
+void askCutlery();
+
+void printCutleryAndMessage(int cutlery, int info, char infoMsg[]);
+
+void printUser(char username[]);
+
+void printOrder(char type[], double price);
+
 #endif //FOOD_ORDERING_SHOWINFO_H
