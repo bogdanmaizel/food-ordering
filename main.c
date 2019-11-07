@@ -9,7 +9,8 @@ int main() {
                             {"Tuna Salad",          "Chicken Salad",  "Greek Salad",      "Cobb"}},
             drinks[][30] = {"Coca-Cola", "Fanta", "Lipton", "Water"},
             username[20], password[20], infoMsg[30],
-            meals[][30] = {"Pizza", "Pasta", "Salad"};
+            meals[][30] = {"Pizza", "Pasta", "Salad"},
+            item1[]="Food:", item2[]="Drink:";
     double prices[3][4] = {{21, 23, 19, 0},
                            {23, 21, 0,  0},
                            {23, 22, 19, 21}}, drinksPrices[] = {5, 5, 5, 4};
@@ -20,8 +21,8 @@ int main() {
             case 1: {// Choose the meal
                 showFood(noOfMeals, meals);
                 choice=getchar();   getchar();
-                checkBackOption(choice, noOfMeals, state);  mealChoice = choice - 'a';
-                ++state; noOfMeals = 3;break;}
+                checkBackOption(choice, noOfMeals, &state);
+                mealChoice = choice - 'a';  ++state;    break;}
             case 2: {// Choose the meal type
                 printf("Please choose the preferred %s:\n", meals[mealChoice]);
                 showFoodWithPrice(noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
@@ -36,20 +37,20 @@ int main() {
                 drinkChoice = drinkChoice - 'a'; state++; break;}
             case 4: {//cutlery
                 askCutlery();
-                cutlery=getchar();  getchar();
-                checkBackOption(cutlery, 'c' + 'a', &state);
+                cutlery=getchar()-'a';  getchar();
+                checkBackOption(cutlery+'a', 'c'-'a', &state);
                 state++; break;}
-            case 5: {printf("Any additional info? Type 'no' for no message.\n");
+            case 5: {printf("Any additional info?\n");
                 gets(infoMsg); state++;
                 if (strcmp(infoMsg, "\n") == 0) info = 0;   else info = 1;}
             case 6: {// Display contract
                 printUser(username);
-                printf("Food:"); printOrder(types[mealChoice][typeChoice], prices[mealChoice][typeChoice]);
-                printf("Drinks:"); printOrder(drinks[drinkChoice], drinksPrices[drinkChoice]);
+                printOrder(item1, types[mealChoice][typeChoice], prices[mealChoice][typeChoice]);   printOrder(item2, drinks[drinkChoice], drinksPrices[drinkChoice]);
                 printCutleryAndMessage(cutlery, info, infoMsg);
                 printf("Total price: %.2f\n", prices[mealChoice][typeChoice] + drinksPrices[drinkChoice]);
-                getchar();  orderFinished = getchar();
-                checkBackOption(orderFinished, 1, &state);  break;}
+                orderFinished = getchar(); getchar(); int stateCopy=state;
+                checkBackOption(orderFinished, 'b'-'a', &state);
+                if (stateCopy !=state) orderFinished=0; break;}
         }
     }return 0;
 }
