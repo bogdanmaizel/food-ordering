@@ -9,7 +9,7 @@ int main() {
                             {"Chicken Alfredo(23)", "Mac&cheese(21)", "", ""},
                             {"Tuna Salad", "Chicken Salad", "Greek Salad", "Cobb"}};
     char drinks[][30] = {"Coca-Cola", "Fanta", "Lipton", "Water"};
-    char food[]="Food:", drink[]="Drink:";
+    char food[]="Food", drink[]="Drink";
     double prices[3][4] = {{21, 23, 19, 0},
                            {23, 21, 0,  0},
                            {23, 22, 19, 21}};

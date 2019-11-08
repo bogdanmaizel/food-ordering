@@ -41,5 +41,5 @@ void printUser(char username[]) {
 }
 
 void printOrder(char item[], char type[], double price) {
-    printf(" %s %s %.2f\n", item, type, price);
+    printf(" %s: %s %.2f\n", item, type, price);
 }
