@@ -30,7 +30,7 @@ void askCutlery() {
 void printCutleryAndMessage(int cutlery, int info, char *infoMsg) {
     printf("Cutlery: ");
     printf(cutlery ? "No\n" : "Yes\n");
-    if (!info) printf("Note: %s\n", infoMsg);
+    if (info) printf("Note: %s\n", infoMsg);
 }
 
 void printUser(char username[]) {
