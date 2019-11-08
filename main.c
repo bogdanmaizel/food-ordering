@@ -28,14 +28,12 @@ int main() {
                 checkBackOption(mealChoice+'a', noOfMeals, &state);
                 break;}
             case 2: {// Choose the meal type
-                printf("Please choose the preferred %s:\n", meals[mealChoice]);
-                showFoodWithPrice(noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
+                showFoodWithPrice(meals[mealChoice], noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
                 readOption(&typeChoice);
                 checkBackOption(typeChoice+'a', noTypes[mealChoice], &state);
                 break;}
             case 3: {// Choose the drink
-                printf("Choose your drink:\n");
-                showFoodWithPrice(nodrinks, drinks, drinksPrices);
+                showFoodWithPrice(drink, nodrinks, drinks, drinksPrices);
                 readOption(&drinkChoice);
                 checkBackOption(drinkChoice+'a', nodrinks, &state);
                 break;}

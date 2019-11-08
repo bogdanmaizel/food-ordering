@@ -14,7 +14,8 @@ void showFood(int noOfMeals, char meals[][30]) {
     printf("%c) Go back\n",'a'+noOfMeals);
 }
 
-void showFoodWithPrice(int noOfMeals, char meals[][30], double prices[]) {
+void showFoodWithPrice(char foodType[], int noOfMeals, char meals[][30], double prices[]) {
+    printf("Choose your %s:\n", foodType);
     for(int i=0;i<noOfMeals;i++) {
         putchar('a'+i);
         printf(") %s (%.2f)\n",meals[i], prices[i]);
