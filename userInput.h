@@ -11,4 +11,6 @@ void checkBackOption(int choice, int choiceCheck, int *state);
 
 void readOption(int *opt);
 
+void login(char user[], char pass[]);
+
 #endif //FOOD_ORDERING_USERINPUT_H
