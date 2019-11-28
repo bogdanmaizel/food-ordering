@@ -41,9 +41,8 @@ void readOption(int *opt) {
     getchar();
 }
 
-void login(char *user, char *pass) {
-    if (strcmp(user,"admin")==0) if (strcmp(pass, "admin")==0) printf("%s\n", SUCCESS);
-                                    else printf("%s\n", INCORRECT_PASSWORD);
+int attemptLogin(char *user, char *pass) {
+
 
 }
 

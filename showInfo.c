@@ -5,7 +5,7 @@
 #include "showInfo.h"
 
 
-void showFood(int noOfMeals, char meals[][30]) {
+void showFood(int noOfMeals, char **meals) {
     printf("Please choose the meal type:\n");
     for(int i=0;i<noOfMeals;i++) {
         putchar('a'+i);
@@ -14,7 +14,7 @@ void showFood(int noOfMeals, char meals[][30]) {
     printf("%c) Go back\n",'a'+noOfMeals);
 }
 
-void showFoodWithPrice(char foodType[], int noOfMeals, char meals[][30], double prices[]) {
+void showFoodWithPrice(char foodType[], int noOfMeals, char **meals, double prices[]) {
     printf("Choose your %s:\n", foodType);
     for(int i=0;i<noOfMeals;i++) {
         putchar('a'+i);
