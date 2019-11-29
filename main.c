@@ -46,60 +46,51 @@ int main() {
                                 types[i][noTypes[i]] = (char *) malloc(l-i+1 * sizeof(char));
                                 sscanf(j+1, "%[^-]%s - ", types[i][noTypes[i]]);
                                 //strncpy(types[i][noTypes[i]++], j, l - i); // building meal type name
-                            sscanf(l + 2, " %[^)]%lf)", prices[i][noTypes[i]]); // reading price
-                            j = strchr(j + 1, '(');
-                            k = strchr(k + 1, ')');
+                                char *readPrice= (char*)malloc(10* sizeof(char));
+                            sscanf(&l, "%[^)]%s)", readPrice); // reading price
+                            prices[i][noTypes[i]]=strtold(l+2, k);
+                            j = strstr(k, "(");
+                            k = strstr(k+1, ")");
                             types[i] = (char **) realloc(types[i], noTypes[i]);
                             prices[i]=(double*)realloc(prices[i],noTypes[i]);
                         }
                     }
                 }
                 else {
-                    printf("NO FILE FOUND\n");
-                    fscanf(stdin, "%d:\n", noOfMeals);
+                    printf("FILE FOUND\nLoading data...");
+                    fscanf(f, "%d:\n", &noOfMeals);
                     noTypes = (int *) malloc(noOfMeals * sizeof(int));
                     types = (char ***) malloc(noOfMeals * sizeof(char **));
-                    for (int i = 0; i < noOfMeals; ++i) { // going trough the lines
-                        char *line = (char *) malloc(MAXLINE * sizeof(char));
-                        if (i == 0) types[i] = (char **) malloc(sizeof(char *));
-                        else types[i] = (char **) realloc(types[i], (i + 1) * sizeof(char *));
-                        fgets(line, MAXLINE, stdin);
-                        sscanf(line, "%s: ", meals[i]);
+                    meals=(char**)malloc(noOfMeals * sizeof(char*));
+                    prices=(double**)malloc(noOfMeals * sizeof(double*));
+                    char *line = (char *) malloc(MAXLINE * sizeof(char));
+                    for (int i = 0; i < noOfMeals; ++i) {// going trough the lines
+                        meals[i]=(char*)malloc(30*sizeof(char));
+                        types[i] = (char **) malloc(sizeof(char *));
+                        prices[i]=(double*)malloc(sizeof(double));
+                        fgets(line, MAXLINE, f);
+                        sscanf(line, "%[^:]%s: ", meals[i]);
                         noTypes[i] = 0;
-                        int j = strchr(line, '(') - line, k = strchr(line, ')') - line, l;
-                        while (line[k] != '\n') { // going trough specific food types
-                            l = strstr(line + j, " - ") - line;
-                            types[i][noTypes[i]] = (char *) malloc(30 * sizeof(char));
-                            strncat(types[i][noTypes[i]++], line + i + 1, l - i); // building meal type name
-                            sscanf(line + l + 3, "%lf)", prices[i][noTypes[i]]); // reading price
-                            j = strchr(line + j + 1, '(') - line;
-                            k = strchr(line + k + 1, ')') - line;
+                        char *j = strchr(line, '('), *k = strchr(line, ')'), *l;
+                        while (line[k-line] != '\n') { // going trough specific food types
+                            l = strstr(line, " - ");
+                            types[i][noTypes[i]] = (char *) malloc(l-i+1 * sizeof(char));
+                            sscanf(j+1, "%[^-]%s - ", types[i][noTypes[i]]);
+                            //strncpy(types[i][noTypes[i]++], j, l - i); // building meal type name
+                            char *readPrice= (char*)malloc(10* sizeof(char));
+                            sscanf(&l, "%[^)]%s)", readPrice); // reading price
+                            prices[i][noTypes[i]]=strtold(l+2, k);
+                            j = strstr(k, "(");
+                            k = strstr(k+1, ")");
+                            types[i] = (char **) realloc(types[i], noTypes[i]);
+                            prices[i]=(double*)realloc(prices[i],noTypes[i]);
                         }
-                        /* free memory
-                        for(int i=0;i<noOfFoods;i++) {
-                            for(int j=0;j<noOfmeals;j++) {
-                                free(meals[i][j]);
-                            }
-                            free(meals[i]);
-                            free(prices[i]);
-                            free(foods[i]);
-                        }
-                        free(meals);
-                        free(prices);
-                        free(foods);
-                        free(noOfmeals);
-                        for (int i=0;i<noOfDrinks;++i)
-                            free(drinks[i]);
-                        free(drinks);
-                        free(drinksPrices);
-                        return 0;
-                    }*/
                     }
                     state++;
                     break;
                 }
             }
-            case 0: {//user data, sign in / sign up implemented
+            case 0: {//user data, sign in / sign up to be implemented
                 printf("welcome to FoodThingies!\nDo you want to sign in or sign up?\n");
                 printf("a) Sign in\nb)Sign up\n");
                 readOption(&loginMethod);
