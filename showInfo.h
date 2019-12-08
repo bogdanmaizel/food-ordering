@@ -7,7 +7,7 @@
 
 void showFood(int noOfMeals, char **meals);
 
-void showFoodWithPrice(char foodType[], int noOfMeals, char **meals, double prices[]);
+void showFoodWithPrice(char foodType[], int noOfMeals, char **meals, double *prices);
 
 void askCutlery();
 

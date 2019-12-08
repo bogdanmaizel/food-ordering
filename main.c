@@ -55,8 +55,7 @@ int main() {
                             strcpy(types[i][j], type);
                                 //strncpy(types[i][noTypes[i]++], j, l - i); // building meal type name
                             type=strtok(NULL, "(");
-                            sscanf(type, "%lf)", &prices[i][noTypes[i]]); // reading price
-
+                            sscanf(type, "%lf)", &prices[i][j]); // reading price
                         }
                     }
                     fscanf(f,"%d:\n", &nodrinks);

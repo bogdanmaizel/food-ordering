@@ -45,12 +45,18 @@ int attemptLogin(char *user, char *pass) {
     char readUser[30],readPass[30];
     getUserPass(readUser,readPass,0);
     if (strcmp(readUser, user)==0 || strcmp(readUser,"admin")==0)
-        if (strcmp(readPass,pass)==0 || strcmp(readPass, "admin")==0) return 1;
+        if (strcmp(readPass,pass)==0 || strcmp(readPass, "admin")==0) {
+            strcpy(user, readUser);
+            strcpy(pass, readPass);
+            return 1;
+        }
             else {
             while (strcmp(readPass, pass)) {
                 printf("%s\n", INCORRECT_PASSWORD);
                 getUserPass(readUser, readPass, 0);
             }
+            strcpy(user, readUser);
+            strcpy(pass, readPass);
             return 1;
         }
     else {
