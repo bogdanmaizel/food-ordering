@@ -5,7 +5,12 @@
 #include "userInput.h"
 #define LOAD_DATA "Please load the data."
 #define MAXLINE 300
+#define SIGN_IN	"Sign in"
+#define SIGN_UP	"Sign up"
+#define SIGN_IN_UP	"Do you want to sign in or sign up?"
+#define SUCCESS "Please choose the food you feel like eating today:"
 FILE *f;
+FILE *users;
 int main() {
     int *noTypes; ///food data
     char **meals;// = {"Pizza", "Pasta", "Salad"};
@@ -19,8 +24,9 @@ int main() {
                         {23, 22, 19, 21}}*/;
     double *drinksPrices;// = {5, 5, 5, 4};
     char *username= (char*)malloc(20* sizeof(char)), *password=(char*)malloc(20* sizeof(char)), *infoMsg=(char*)malloc(20* sizeof(char));///user input
-    int noOfMeals, mealChoice, typeChoice, drinkChoice, cutlery, info = 0, state = -1, orderFinished = 0, nodrinks = 4, loginMethod, hasDrink=1;
+    int noOfMeals, mealChoice, typeChoice, drinkChoice, cutlery, info = 0, state = -1, orderFinished = 0, nodrinks, loginMethod, hasDrink=1;
     f=fopen("C:\\00SCHOOL\\CP\\food-ordering\\data.txt","r");
+    users=fopen("C:\\00SCHOOL\\CP\\food-ordering\\login.txt","a");
     while (!orderFinished) {
         switch (state) {
             case -1: { //load data
@@ -53,18 +59,21 @@ int main() {
 
                         }
                     }
-                    fscanf(f,"%d:\n", nodrinks);
+                    fscanf(f,"%d:\n", &nodrinks);
                     drinks=(char**)malloc(nodrinks* sizeof(char*));
                     drinksPrices = (double *)malloc(nodrinks* sizeof(double));
                     fgets(line,MAXLINE,f);
-                    char *type=strtok(line,"(");
+                    //char *type=strtok(line, "(");
+                    char *type=strtok(line,"-");
                     for (int i=0;i<nodrinks;++i) {
-                        type=strtok(line,"-");
-                        strcpy(drinks[i],type);
-                        type=strtok(NULL,")");
-                        sscanf(type,"%lf)", &drinksPrices[i]);
-
+                        drinks[i]=(char*)malloc(30* sizeof(char));
+                        if (!i) strcpy(drinks[i],type+1);
+                        else strcpy(drinks[i], type+2);
+                        type=strtok(NULL,",");
+                        sscanf(type,"%lf", &drinksPrices[i]);
+                        type=strtok(NULL, "-");
                     }
+                    fclose(f);
                 }
                 else {
                     printf("NO FILE FOUND\n%s", LOAD_DATA);
@@ -95,24 +104,47 @@ int main() {
 
                         }
                     }
+                    fscanf(f,"%d:\n", &nodrinks);
+                    drinks=(char**)malloc(nodrinks* sizeof(char*));
+                    drinksPrices = (double *)malloc(nodrinks* sizeof(double));
+                    fgets(line,MAXLINE,stdin);
+                    //char *type=strtok(line, "(");
+                    char *type=strtok(line,"-");
+                    for (int i=0;i<nodrinks;++i) {
+                        drinks[i]=(char*)malloc(30* sizeof(char));
+                        if (!i) strcpy(drinks[i],type+1);
+                        else strcpy(drinks[i], type+2);
+                        type=strtok(NULL,",");
+                        sscanf(type,"%lf", &drinksPrices[i]);
+                        type=strtok(NULL, "-");
+                    }
                     state++;
                     break;
                 }
             }
             case 0: {//user data, sign in / sign up implemented
-                printf("welcome to FoodThingies!\nDo you want to sign in or sign up?\n");
-                printf("a) Sign in\nb) Sign up\n");
+                printf("%s\n", SIGN_IN_UP);
+                printf("a) %s\nb) %s\n", SIGN_IN, SIGN_UP);
                 readOption(&loginMethod);
-                int ok=0;
-                do
-                    {ok=attemptLogin(username, password);}
-                while (!ok);
+                int ok = 0;
+                if (loginMethod==0)
+                {
+                    do { ok = attemptLogin(username, password); }
+                    while (!ok);
+                }
+                else
+                {
+                    ok=tryRegister(username, password);
+                }
+                if (ok) state=1;
+                else state=0;
                 /*if (loginMethod) getUserPass(username, password);
                 else
                     while (!ok) ok=attemptLogin(username,password);*/
-                state++;
+
                 break;}
             case 1: {// Choose the meal
+                printf("%s\n", SUCCESS);
                 showFood(noOfMeals, meals);
                 readOption(&mealChoice);
                 checkBackOption(mealChoice, noOfMeals, &state);
