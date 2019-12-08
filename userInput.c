@@ -85,9 +85,11 @@ int tryRegister(char *user, char *pass) {
         printf("%s\n", ERROR_PASSWORD_DIGITS);
         return 0;
     }
-    if (!(strchr(password, '_') || strchr(password, '0') || strchr(password, '0'))) {
+    if (!(strchr(password, '_') || strchr(password, '.') || strchr(password, '!'))) {
         printf("%s\n", ERROR_PASSWORD_SPECIAL_CHAR);
         return 0;
     }
+    strcpy(user, username);
+    strcpy(pass, password);
     return 1;
 }
