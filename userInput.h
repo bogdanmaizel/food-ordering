@@ -5,14 +5,20 @@
 #ifndef FOOD_ORDERING_USERINPUT_H
 #define FOOD_ORDERING_USERINPUT_H
 
-void getUserPass(char username[], char password[], int option);
+typedef struct _account {
+    char *username, *password;
+} account;
+
+account newAccount();
+
+void getUserPass(account *a, int option);
 
 void checkBackOption(int choice, int choiceCheck, int *state);
 
 void readOption(int *opt);
 
-int attemptLogin(char user[], char pass[]);
+int attemptLogin(account *a);
 
-int tryRegister(char *user, char *pass);
+int tryRegister(account *a);
 
 #endif //FOOD_ORDERING_USERINPUT_H

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "showInfo.h"
 #include "userInput.h"
+#include "food.h"
 #define LOAD_DATA "Please load the data."
 #define MAXLINE 300
 #define SIGN_IN	"Sign in"
@@ -11,6 +12,7 @@
 #define SUCCESS "Please choose the food you feel like eating today:"
 FILE *f;
 FILE *users;
+
 int main() {
     int *noTypes; ///food data
     char **meals;// = {"Pizza", "Pasta", "Salad"};
@@ -18,21 +20,28 @@ int main() {
                             {"Chicken Alfredo", "Mac&cheese", "", ""},
                             {"Tuna Salad", "Chicken Salad", "Greek Salad", "Cobb"}};*/
     char **drinks;// = {"Coca-Cola", "Fanta", "Lipton", "Water"};
-    char *food="Food", *drink="Drink";
+    char *foodText="Food", *drinkText="Drink";
     double **prices /*=   {{21, 23, 19, 0},
                         {23, 21, 0,  0},
                         {23, 22, 19, 21}}*/;
     double *drinksPrices;// = {5, 5, 5, 4};
-    char *username= (char*)malloc(20* sizeof(char)), *password=(char*)malloc(20* sizeof(char)), *infoMsg=(char*)malloc(20* sizeof(char));///user input
-    int noOfMeals, mealChoice, typeChoice, drinkChoice, cutlery, info = 0, state = -1, orderFinished = 0, nodrinks, loginMethod, hasDrink=1;
+    char *infoMsg=(char*)malloc(20* sizeof(char));///user input
+    int noOfMeals, mealChoice, typeChoice, drinkChoice, cutlery, info = 0, orderFinished = 0, nodrinks, loginMethod;
     f=fopen("C:\\00SCHOOL\\CP\\food-ordering\\data.txt","r");
     users=fopen("C:\\00SCHOOL\\CP\\food-ordering\\login.txt","a");
-    while (!orderFinished) {
+    enum State{LOADING_DATA, LOG_IN, CHOOSE_CATEGORY, CHOOSE_TYPE, CHOOSE_DRINK, CHOOSE_CUTLERY, WRITE_NOTE, CONFIRM};
+    account a=newAccount();
+    food **toEat;
+    drink *toDrink;
+    order order1 = newOrder();
+    int state=0;
+    while (state<=CONFIRM || !orderFinished) {
         switch (state) {
-            case -1: { //load data
+            case LOADING_DATA: {
                 if (f) {
                     printf("FILE FOUND\nLoading data...\n");
                     fscanf(f, "%d:\n", &noOfMeals);
+                    toEat = (food**)malloc(noOfMeals* sizeof(food*));
                     noTypes = (int *) malloc(noOfMeals * sizeof(int));
                     types = (char ***) malloc(noOfMeals * sizeof(char **));
                     meals=(char**)malloc(noOfMeals * sizeof(char*));
@@ -44,32 +53,46 @@ int main() {
                         prices[i]=(double*)malloc(sizeof(double));
                         fgets(line, MAXLINE, f);
                         sscanf(line, "%s %d: ", meals[i], &noTypes[i]);
+                        toEat[i]=(food*)malloc(noTypes[i]* sizeof(food));
                         //char *j = strchr(line, '('), *k = strchr(line, ')'), *l;
                         //int startType=strchr(line, '(')-line, stopType=strchr(line, ')')-line, midType;
                         char *type=strtok(line,"(");
                         //while (line[k] != '\n') { // going trough specific food types
                         for (int j=0;j<noTypes[i];++j) {
+                            toEat[i][j]=newFood();
                             type=strtok(NULL, "-");
                             types[i][j] = (char *) malloc(30 * sizeof(char));
                             //sscanf(type, "%[^\0]%s", types[i][j]);
                             strcpy(types[i][j], type);
+                            strcpy(toEat[i][j].name, type);
+                            strcpy(toEat[i][j].category, meals[i]);
                                 //strncpy(types[i][noTypes[i]++], j, l - i); // building meal type name
                             type=strtok(NULL, "(");
-                            sscanf(type, "%lf)", &prices[i][j]); // reading price
+                            sscanf(type, "%lf)", &prices[i][j]);
+                            toEat[i][j].price=&prices[i][j];
                         }
                     }
                     fscanf(f,"%d:\n", &nodrinks);
                     drinks=(char**)malloc(nodrinks* sizeof(char*));
                     drinksPrices = (double *)malloc(nodrinks* sizeof(double));
+                    toDrink = (food*)malloc(nodrinks* sizeof(food));
                     fgets(line,MAXLINE,f);
                     //char *type=strtok(line, "(");
                     char *type=strtok(line,"-");
                     for (int i=0;i<nodrinks;++i) {
+                        toDrink[i]=newDrink();
                         drinks[i]=(char*)malloc(30* sizeof(char));
-                        if (!i) strcpy(drinks[i],type+1);
-                        else strcpy(drinks[i], type+2);
+                        if (!i) {
+                            strcpy(drinks[i], type + 1);
+                            strcpy(toDrink[i].name, type+1);
+                        }
+                        else {
+                            strcpy(drinks[i], type + 2);
+                            strcpy(toDrink[i].name, type+2);
+                        }
                         type=strtok(NULL,",");
                         sscanf(type,"%lf", &drinksPrices[i]);
+                        toDrink[i].price = &drinksPrices[i];
                         type=strtok(NULL, "-");
                     }
                     fclose(f);
@@ -103,7 +126,7 @@ int main() {
 
                         }
                     }
-                    fscanf(f,"%d:\n", &nodrinks);
+                    fscanf(stdin,"%d:\n", &nodrinks);
                     drinks=(char**)malloc(nodrinks* sizeof(char*));
                     drinksPrices = (double *)malloc(nodrinks* sizeof(double));
                     fgets(line,MAXLINE,stdin);
@@ -121,63 +144,60 @@ int main() {
                     break;
                 }
             }
-            case 0: {//user data, sign in / sign up implemented
+            case LOG_IN: {//user data, sign in / sign up implemented
                 printf("%s\n", SIGN_IN_UP);
                 printf("a) %s\nb) %s\n", SIGN_IN, SIGN_UP);
                 readOption(&loginMethod);
                 int ok = 0;
                 if (loginMethod==0)
                 {
-                    do { ok = attemptLogin(username, password); }
+                    do { ok = attemptLogin(&a); }
                     while (!ok);
                 }
                 else
                 {
-                    ok=tryRegister(username, password);
+                    ok=tryRegister(&a);
                 }
-                if (ok) state=1;
-                else state=0;
+                if (ok) state=CHOOSE_CATEGORY;
+                else state=LOG_IN;
                 /*if (loginMethod) getUserPass(username, password);
                 else
                     while (!ok) ok=attemptLogin(username,password);*/
 
                 break;}
-            case 1: {// Choose the meal
+            case CHOOSE_CATEGORY: {// Choose the meal
                 printf("%s\n", SUCCESS);
                 showFood(noOfMeals, meals);
                 readOption(&mealChoice);
+
                 checkBackOption(mealChoice, noOfMeals, &state);
                 break;}
-            case 2: {// Choose the meal type
+            case CHOOSE_TYPE: {// Choose the meal type
                 showFoodWithPrice(meals[mealChoice], noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
                 readOption(&typeChoice);
                 checkBackOption(typeChoice, noTypes[mealChoice], &state);
                 break;}
-            case 3: {// Choose the drink
-                showFoodWithPrice(drink, nodrinks, drinks, drinksPrices);
+            case CHOOSE_DRINK: {// Choose the drink
+                showFoodWithPrice(drinkText, nodrinks, drinks, drinksPrices);
                 readOption(&drinkChoice);
-                if (drinkChoice==nodrinks) {
-                    hasDrink=0;
-                }
-                checkBackOption(drinkChoice, nodrinks+1, &state);
+                checkBackOption(drinkChoice, nodrinks, &state);
                 break;
                 }
-            case 4: {//cutlery
+            case CHOOSE_CUTLERY: {//cutlery
                 askCutlery();
                 readOption(&cutlery);
                 checkBackOption(cutlery, 'c'-'a', &state);
                 break;
                 }
-            case 5: {printf("Any additional info?\n");
+            case WRITE_NOTE: {printf("Any additional info?\n");
                 gets(infoMsg);
                 info=1,state++;
                 if (strcmp(infoMsg, "\n") == 0) info = 0;
                 break;
                 }
-            case 6: {// Display contract
-                printUser(username);
-                printOrder(food, types[mealChoice][typeChoice], prices[mealChoice][typeChoice]);
-                if (hasDrink) printOrder(drink, drinks[drinkChoice], drinksPrices[drinkChoice]);
+            case CONFIRM: {// Display contract
+                printUser(a.username);
+                printOrder(f, d);
                 printCutleryAndMessage(cutlery, info, infoMsg);
                 printf("Total price: %.2f\n", prices[mealChoice][typeChoice] + drinksPrices[drinkChoice]);
                 readOption(&orderFinished);

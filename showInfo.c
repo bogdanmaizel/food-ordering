@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include "showInfo.h"
 
+order newOrder() {
+    order o;
+    o.ordDrink=newDrink();
+    o.ordFood=newFood();
+    return o;
+}
 
 void showFood(int noOfMeals, char **meals) {
     printf("Please choose the meal type:\n");
@@ -40,6 +46,7 @@ void printUser(char username[]) {
     printf("-username: %s\n", username);
 }
 
-void printOrder(char item[], char type[], double price) {
-    printf(" %s: %s %.2f\n", item, type, price);
+void printOrder(food f, drink d) {
+    printf("%s: %s %.2f\n", f.category, f.name, f.price);
+    printf("Drinks: %s %.2f\n", d.name, d.price);
 }
