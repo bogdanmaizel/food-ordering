@@ -75,7 +75,7 @@ int main() {
                     fscanf(f,"%d:\n", &nodrinks);
                     drinks=(char**)malloc(nodrinks* sizeof(char*));
                     drinksPrices = (double *)malloc(nodrinks* sizeof(double));
-                    toDrink = (food*)malloc(nodrinks* sizeof(food));
+                    toDrink = (food*)malloc(nodrinks * sizeof(food));
                     fgets(line,MAXLINE,f);
                     //char *type=strtok(line, "(");
                     char *type=strtok(line,"-");
@@ -169,17 +169,25 @@ int main() {
                 printf("%s\n", SUCCESS);
                 showFood(noOfMeals, meals);
                 readOption(&mealChoice);
-
+                if (mealChoice<noOfMeals) strcpy(order1.ordFood.category, meals[mealChoice]);
                 checkBackOption(mealChoice, noOfMeals, &state);
                 break;}
             case CHOOSE_TYPE: {// Choose the meal type
                 showFoodWithPrice(meals[mealChoice], noTypes[mealChoice], types[mealChoice], prices[mealChoice]);
                 readOption(&typeChoice);
                 checkBackOption(typeChoice, noTypes[mealChoice], &state);
+                if (typeChoice<noTypes[mealChoice]) {
+                    strcpy(order1.ordFood.name, types[mealChoice][typeChoice]);
+                    order1.ordFood.price = &prices[mealChoice][typeChoice];
+                }
                 break;}
             case CHOOSE_DRINK: {// Choose the drink
                 showFoodWithPrice(drinkText, nodrinks, drinks, drinksPrices);
                 readOption(&drinkChoice);
+                if (drinkChoice<nodrinks) {
+                    strcpy(order1.ordDrink.name, drinks[drinkChoice]);
+                    order1.ordDrink.price = &drinksPrices[drinkChoice];
+                }
                 checkBackOption(drinkChoice, nodrinks, &state);
                 break;
                 }
@@ -197,7 +205,7 @@ int main() {
                 }
             case CONFIRM: {// Display contract
                 printUser(a.username);
-                printOrder(f, d);
+                printOrder(order1);
                 printCutleryAndMessage(cutlery, info, infoMsg);
                 printf("Total price: %.2f\n", prices[mealChoice][typeChoice] + drinksPrices[drinkChoice]);
                 readOption(&orderFinished);

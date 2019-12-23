@@ -10,6 +10,9 @@
 typedef struct _order {
     food ordFood;
     drink ordDrink;
+    int hasCutlery;
+    int hasMessage;
+    char *message;
 } order;
 
 order newOrder();
@@ -24,6 +27,6 @@ void printCutleryAndMessage(int cutlery, int info, char infoMsg[]);
 
 void printUser(char username[]);
 
-void printOrder(food f, drink d);
+void printOrder(order order1);
 
 #endif //FOOD_ORDERING_SHOWINFO_H

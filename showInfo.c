@@ -2,12 +2,14 @@
 // Created by mbogd on 4/11/2019.
 //
 #include <stdio.h>
+#include <stdlib.h>
 #include "showInfo.h"
 
 order newOrder() {
     order o;
     o.ordDrink=newDrink();
     o.ordFood=newFood();
+    o.message=(char*)malloc(300* sizeof(char));
     return o;
 }
 
@@ -46,7 +48,9 @@ void printUser(char username[]) {
     printf("-username: %s\n", username);
 }
 
-void printOrder(food f, drink d) {
-    printf("%s: %s %.2f\n", f.category, f.name, f.price);
-    printf("Drinks: %s %.2f\n", d.name, d.price);
+void printOrder(order order1) {
+    printf("%s: %s %.2f\n", order1.ordFood.category, order1.ordFood.name, *(order1.ordFood.price));
+    printf("Drinks: %s %.2f\n", order1.ordDrink.name, *(order1.ordDrink.price));
+    printCutleryAndMessage(order1.hasCutlery, order1.hasMessage, order1.hasMessage);
+    printf("Total price: %.2f\n", *(order1.ordFood.price) + *(order1.ordDrink.price));
 }
