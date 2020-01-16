@@ -17,19 +17,25 @@
 #define USER_NOT_FOUND	"Username doesn't exist"
 #define DUPLICATE_USER	"Please choose another username!"
 #define INCORRECT_PASSWORD	"Incorrect password"
+enum State{LOADING_DATA, LOG_IN, CHOOSE_CATEGORY, CHOOSE_TYPE, CHOOSE_DRINK, CHOOSE_CUTLERY, WRITE_NOTE, CONFIRM};
+account newAccount() {
+    account a;
+    a.password = (char*)malloc(30* sizeof(char));
+    a.username = (char*)malloc(30* sizeof(char));
+    return a;
+}
 
-
-void getUserPass(char username[], char password[], int option) {
+void getUserPass(account *a, int option) {
     printf("%s\n", (option ? SIGNING_UP : SIGNING_IN));
     printf("---Username:\n");
-    gets(username);
+    gets((*a).username);
     printf("---Password:\n");
-    gets(password);
+    gets((*a).password);
 }
 
 void checkBackOption(int choice, int choiceCheck, int *state) {
     if (choice == choiceCheck) {
-        if (*state==6)
+        if (*state==CONFIRM)
         *state-=2;
         else *state-=1;
     }
@@ -41,22 +47,23 @@ void readOption(int *opt) {
     getchar();
 }
 
-int attemptLogin(char *user, char *pass) {
-    char readUser[30],readPass[30];
-    getUserPass(readUser,readPass,0);
-    if (strcmp(readUser, user)==0 || strcmp(readUser,"admin")==0)
-        if (strcmp(readPass,pass)==0 || strcmp(readPass, "admin")==0) {
-            strcpy(user, readUser);
-            strcpy(pass, readPass);
+int attemptLogin(account *a) {
+    //char readUser[30],readPass[30];
+    account aux = newAccount();
+    getUserPass(&aux,0);
+    if (strcmp(aux.username, a->username)==0 || strcmp(aux.username,"admin")==0)
+        if (strcmp(aux.password,a->password)==0 || strcmp(aux.password, "admin")==0) {
+            strcpy(a->username, aux.username);
+            strcpy(a->password, aux.password);
             return 1;
         }
             else {
-            while (strcmp(readPass, pass)) {
+            while (strcmp(aux.password, a->password)) {
                 printf("%s\n", INCORRECT_PASSWORD);
-                getUserPass(readUser, readPass, 0);
+                getUserPass(&aux, 0);
             }
-            strcpy(user, readUser);
-            strcpy(pass, readPass);
+            strcpy(a->username, aux.username);
+            strcpy(a->password, aux.password);
             return 1;
         }
     else {
@@ -65,31 +72,31 @@ int attemptLogin(char *user, char *pass) {
     }
 }
 
-int tryRegister(char *user, char *pass) {
-    char *username = (char*)malloc(30* sizeof(char)), *password = (char*)malloc(30* sizeof(char));
-    getUserPass(username,password, 1);
-    if (strcmp(user, username)==0) {
+int tryRegister(account *a) {
+    account aux = newAccount();
+    getUserPass(&aux, 1);
+    if (strcmp(a->username, aux.username)==0) {
         printf("%s\n", DUPLICATE_USER);
         return 0;
     }
-    if (strstr(username,password)) {
+    if (strstr(a->username,aux.password)) {
         printf("%s\n", ERROR_PASSWORD_NOT_USERNAME);
         return 0;
     }
-    if (strlen(password)<7) {
+    if (strlen(aux.password)<7) {
         printf("%s\n", ERROR_PASSWORD_LONG);
         return 0;
     }
-    if (!((strchr(password, '0') || strchr(password, '1') || strchr(password, '2') || strchr(password, '3') || strchr(password, '4') ||
-    strchr(password, '5') || strchr(password, '6') || strchr(password, '7') || strchr(password, '8') || strchr(password, '9')))) {
+    if (!((strchr(a->password, '0') || strchr(a->password, '1') || strchr(a->password, '2') || strchr(a->password, '3') || strchr(a->password, '4') ||
+    strchr(a->password, '5') || strchr(a->password, '6') || strchr(a->password, '7') || strchr(a->password, '8') || strchr(a->password, '9')))) {
         printf("%s\n", ERROR_PASSWORD_DIGITS);
         return 0;
     }
-    if (!(strchr(password, '_') || strchr(password, '.') || strchr(password, '!'))) {
+    if (!(strchr(a->password, '_') || strchr(a->password, '.') || strchr(a->password, '!'))) {
         printf("%s\n", ERROR_PASSWORD_SPECIAL_CHAR);
         return 0;
     }
-    strcpy(user, username);
-    strcpy(pass, password);
+    strcpy(a->username, aux.username);
+    strcpy(a->password, aux.password);
     return 1;
 }
